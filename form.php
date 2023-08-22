@@ -13,14 +13,11 @@
 
 <body>
     <?php
-    session_start();
-    require_once("./controller/SinhVienController.php");
-    require_once("./entity/SinhVien.php");
-    $errors = [];
     $id = 0;
     if (isset($_REQUEST["id"])) {
         $id = $_REQUEST["id"];
     }
+    $errors = [];
     if (isset($_POST['btn-submit'])) {
         if (empty($_POST['tenSV'])) {
             $errors['tenSV'] = 'Tên sinh viên không được để trống';
@@ -52,21 +49,15 @@
         } else {
             $khoa = htmlspecialchars(trim($_POST['khoa']));
         }
-        if (count($errors) === 0) {
-            $sinhVien = new SinhVien();
-            $sinhVien->set_tenSV($tenSV);
-            $sinhVien->set_diaChi($diaChi);
-            $sinhVien->set_ngaySinh($ngaySinh);
-            $sinhVien->set_gioiTinh($gioiTinh);
-            $sinhVien->set_lop($lop);
-            $sinhVien->set_khoa($khoa);
-        }
     }
     ?>
     <section class="container-sm mt-4 px-5">
-        <a href="index.php" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Quản lý sinh viên</a>
+        <a href="index.php" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
+            <i class="bi bi-arrow-left"></i>
+            Quản lý sinh viên
+        </a>
     </section>
-    <section class="container-sm mt-5 px-5">
+    <section class="container-sm my-5 px-5">
         <h1 class="mb-4 text-center">
             <?php
             if ($id !== 0) {
@@ -79,43 +70,75 @@
         <form id="form-post" method="POST">
             <input id="studentId" name="studentId" hidden value="<?php echo $id ?>" />
             <div class="mb-3">
-                <label for="tenSV" class="form-label fw-medium">Tên sinh viên</label>
+                <label for="tenSV" class="form-label fw-medium">Tên sinh viên <span class="text-danger">(*)</span></label>
                 <input type="text" class="form-control" id="tenSV" name="tenSV">
+                <?php
+                if (isset($errors["tenSV"])) {
+                    echo "<div class='alert alert-danger mt-3 py-1 d-inline-flex'>" . $errors["tenSV"] . "</div>";
+                }
+                ?>
             </div>
             <div class="mb-3">
-                <label for="ngaySinh" class="form-label fw-medium">Ngày sinh</label>
+                <label for="ngaySinh" class="form-label fw-medium">Ngày sinh <span class="text-danger">(*)</span></label>
                 <input type="date" class="form-control" id="ngaySinh" name="ngaySinh">
+                <?php
+                if (isset($errors["ngaySinh"])) {
+                    echo "<div class='alert alert-danger mt-3 py-1 d-inline-flex'>" . $errors["ngaySinh"] . "</div>";
+                }
+                ?>
             </div>
             <div class="mb-3">
-                <label for="diaChi" class="form-label fw-medium ">Địa chỉ</label>
+                <label for="diaChi" class="form-label fw-medium ">Địa chỉ <span class="text-danger">(*)</span></label>
                 <input type="text" class="form-control" id="diaChi" name="diaChi">
+                <?php
+                if (isset($errors["diaChi"])) {
+                    echo "<div class='alert alert-danger mt-3 py-1 d-inline-flex'>" . $errors["diaChi"] . "</div>";
+                }
+                ?>
             </div>
-            <div class="mb-3 d-flex align-items-center">
-                <span class="me-4 fw-medium">Giới tính</span>
+            <div class="mb-3">
                 <div class="d-flex align-items-center">
-                    <div class="form-check d-flex align-items-center me-4">
-                        <input type="radio" class="form-check-input me-2" id="nam" name="gioiTinh" value="Nam">
-                        <label for="nam" class="form-check-label">Nam</label>
-                    </div>
-                    <div class="form-check d-flex align-items-center">
-                        <input type="radio" class="form-check-input me-2" id="nu" name="gioiTinh" value="Nữ">
-                        <label for="nu" class="form-check-label">Nữ</label>
+                    <span class="me-4 fw-medium">Giới tính <span class="text-danger">(*)</span></span>
+                    <div class="d-flex align-items-center">
+                        <div class="form-check d-flex align-items-center me-4">
+                            <input type="radio" class="form-check-input me-2" id="nam" name="gioiTinh" value="Nam">
+                            <label for="nam" class="form-check-label">Nam</label>
+                        </div>
+                        <div class="form-check d-flex align-items-center">
+                            <input type="radio" class="form-check-input me-2" id="nu" name="gioiTinh" value="Nữ">
+                            <label for="nu" class="form-check-label">Nữ</label>
+                        </div>
                     </div>
                 </div>
+                <?php
+                if (isset($errors["gioiTinh"])) {
+                    echo "<div class='alert alert-danger mt-3 py-1 d-inline-flex'>" . $errors["gioiTinh"] . "</div>";
+                }
+                ?>
             </div>
             <div class="mb-3">
-                <label for="lop" class="form-label fw-medium">Lớp</label>
+                <label for="lop" class="form-label fw-medium">Lớp <span class="text-danger">(*)</span></label>
                 <input type="text" class="form-control" id="lop" name="lop">
+                <?php
+                if (isset($errors["lop"])) {
+                    echo "<div class='alert alert-danger mt-3 py-1 d-inline-flex'>" . $errors["lop"] . "</div>";
+                }
+                ?>
             </div>
             <div class="mb-3">
-                <label for="khoa" class="form-label fw-medium">Khoa</label>
+                <label for="khoa" class="form-label fw-medium">Khoa <span class="text-danger">(*)</span></label>
                 <select class="form-control" id="khoa" name="khoa">
                     <option value="CNTT">CNTT</option>
                     <option value="QTKD">QTKD</option>
                     <option value="Marketing">Marketing</option>
                 </select>
+                <?php
+                if (isset($errors["khoa"])) {
+                    echo "<div class='alert alert-danger mt-3 py-1 d-inline-flex'>" . $errors["khoa"] . "</div>";
+                }
+                ?>
             </div>
-            <button type='submit' class='btn btn-primary' name='btn-submit'>
+            <button type='submit' class='btn btn-primary mt-2' name='btn-submit'>
                 <?php
                 if ($id !== 0) {
                     echo "Cập nhật";
@@ -144,7 +167,6 @@
         const form = document.getElementById('form-post')
 
         form.addEventListener('submit', function(e) {
-            e.preventDefault()
             const data = {
                 id: +id !== 0 ? +id : 0,
                 tenSV: tenSV.value,
@@ -154,21 +176,22 @@
                 lop: lop.value,
                 khoa: khoa.value
             }
-            $.ajax({
-                url: `./response/luu_sinh_vien.php?action=${+id !== 0 ? 'update' : 'insert'}`,
-                data: data,
-                method: 'POST',
-                success: function(res) {
-                    console.log(res);
-                    if (res.status) {
-                        window.location.href = "index.php"
+            if (data.tenSV && data.ngaySinh && data.diaChi && data.lop && data.khoa && data.gioiTinh) {
+                e.preventDefault();
+                $.ajax({
+                    url: `./response/luu_sinh_vien.php?action=${+id !== 0 ? 'update' : 'insert'}`,
+                    data: data,
+                    method: 'POST',
+                    success: function(res) {
+                        if (res.status) {
+                            window.location.href = "index.php"
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.error(error);
-                }
-
-            })
+                })
+            }
         })
 
         const handleGetDetailStudent = () => {

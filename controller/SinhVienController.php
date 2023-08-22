@@ -5,11 +5,15 @@ require_once(__ROOT__ . '/entity/SinhVien.php');
 
 class SinhVienController
 {
-    public static function index()
+    public static function index($keyword)
     {
         $students = [];
         $connection = Connection::getConnection();
-        $sql = "SELECT * from sinh_vien";
+        if (empty($keyword) || $keyword === null || trim($keyword) === '') {
+            $sql = "SELECT * from sinh_vien";
+        } else {
+            $sql = "SELECT * from sinh_vien where ten_sinh_vien like '%$keyword%'";
+        }
         $result = $connection->query($sql);
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {

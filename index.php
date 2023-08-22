@@ -15,7 +15,7 @@
 </head>
 
 <body>
-    <section class="main_container pt-5">
+    <section class="main_container py-5">
         <div class="container-sm px-5">
             <h1 class="mb-4 text-center">Quản lý sinh viên</h1>
             <div class="d-flex align-items-center justify-content-between">
@@ -30,7 +30,7 @@
                         <span class="input-group-text" id="basic-addon1">
                             <i class="bi bi-search"></i>
                         </span>
-                        <input type="text" placeholder="Tên sinh viên..." class="form-control" name="search" id="search" />
+                        <input type="text" placeholder="Tên sinh viên..." class="form-control" name="search" id="search" autocomplete="off" />
                     </div>
                 </div>
             </div>
@@ -84,20 +84,21 @@
         const tbodyData = document.getElementById('tbody-data');
         const search = document.getElementById("search")
         const modalLayout = document.createElement("div")
+        let keyword = ''
         overlay.addEventListener('click', function() {
             this.style.display = 'none'
             modal.removeChild(modalLayout);
         })
-        search.addEventListener("change", function(e) {
-            console.log(e.target.value);
+        search.addEventListener("input", function(e) {
+            handleGetListStudent(e.target.value)
         })
-        const main = () => {
-            handleGetListStudent()
-        }
-        const handleGetListStudent = () => {
+        const handleGetListStudent = (keyword) => {
             $.ajax({
                 url: './response/ds_sinh_vien.php?action=list',
                 method: 'GET',
+                data: {
+                    keyword: keyword
+                },
                 success: function(response) {
                     tbodyData.innerHTML = response
                 }
@@ -160,7 +161,7 @@
                 }
             })
         }
-        main()
+        handleGetListStudent(keyword)
     </script>
 </body>
 

@@ -3,14 +3,16 @@ require_once '../controller/SinhVienController.php';
 if (isset($_REQUEST["action"])) {
     $action = $_REQUEST["action"];
     if ($action === "list" && $_SERVER['REQUEST_METHOD'] === 'GET') {
-        $students = SinhVienController::index();
+        $keyword = $_GET["keyword"];
+        $students = SinhVienController::index($keyword);
         $stt = 0;
         foreach ($students as $sinhVien) {
             $stt++;
+            $phpdate = strtotime($sinhVien->get_ngaySinh());
             echo "<tr>";
             echo "<td>$stt</td>";
             echo "<td>" . $sinhVien->get_tenSV() . "</td>";
-            echo "<td>" . $sinhVien->get_ngaySinh() . "</td>";
+            echo "<td>" . date("d-m-Y", $phpdate)  . "</td>";
             echo "<td>" . $sinhVien->get_diaChi() . "</td>";
             echo "<td>" . $sinhVien->get_gioiTinh() . "</td>";
             echo "<td>" . $sinhVien->get_lop() . "</td>";
