@@ -54,6 +54,25 @@ class SinhVienController
         if ($sinhVien instanceof SinhVien === false || $sinhVien === null || intval($id) === 0) {
             $response = ['code' => 400, 'message' => 'Dữ liệu đầu vào không hợp lệ', 'status' => false];
         }
+        $tenSV = $sinhVien->get_tenSV();
+        $ngaySinh = $sinhVien->get_ngaySinh();
+        $diaChi = $sinhVien->get_diaChi();
+        $gioiTinh = $sinhVien->get_gioiTinh();
+        $lop = $sinhVien->get_lop();
+        $khoa = $sinhVien->get_khoa();
+        $connection = Connection::getConnection();
+        $sql = "UPDATE sinh_vien SET ten_sinh_vien = ?, ngay_sinh = ?, dia_chi = ?, gioi_tinh = ?, lop = ?, khoa = ? WHERE id = ?";
+        $statement = $connection->prepare($sql);
+        $statement->bind_param('ssssssi', $tenSV, $ngaySinh, $diaChi, $gioiTinh, $lop, $khoa, $id);
+
+        if ($statement->execute()) {
+            $response = ['code' => 200, 'message' => 'Cập nhật thông tin sinh viên thành công', 'status' => true];
+        } else {
+            $response = ['code' => 500, 'message' => 'Lỗi khi sủa thông tin sinh viên: ' . $statement->error, 'status' => false];
+        }
+        $statement->close();
+        Connection::closeConnection($connection);
+        return $response;
     }
     public static function detail($id)
     {

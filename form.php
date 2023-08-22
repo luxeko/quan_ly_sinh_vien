@@ -13,12 +13,13 @@
 
 <body>
     <?php
+    session_start();
     require_once("./controller/SinhVienController.php");
     require_once("./entity/SinhVien.php");
     $errors = [];
     $id = 0;
-    if (isset($_GET["id"])) {
-        $id = $_GET["id"];
+    if (isset($_REQUEST["id"])) {
+        $id = $_REQUEST["id"];
     }
     if (isset($_POST['btn-submit'])) {
         if (empty($_POST['tenSV'])) {
@@ -59,17 +60,23 @@
             $sinhVien->set_gioiTinh($gioiTinh);
             $sinhVien->set_lop($lop);
             $sinhVien->set_khoa($khoa);
-
-            if ($id === 0) {
-                SinhVienController::create($sinhVien);
-            } else {
-            }
         }
     }
     ?>
-    <section class="container-sm mt-5">
-        <h1>Thêm mới sinh viên</h1>
-        <form action="" method="POST">
+    <section class="container-sm mt-4 px-5">
+        <a href="index.php" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Quản lý sinh viên</a>
+    </section>
+    <section class="container-sm mt-5 px-5">
+        <h1 class="mb-4 text-center">
+            <?php
+            if ($id !== 0) {
+                echo "Cập nhật thông tin sinh viên";
+            } else {
+                echo "Thêm mới sinh viên";
+            }
+            ?>
+        </h1>
+        <form id="form-post" method="POST">
             <input id="studentId" name="studentId" hidden value="<?php echo $id ?>" />
             <div class="mb-3">
                 <label for="tenSV" class="form-label fw-medium">Tên sinh viên</label>
@@ -108,11 +115,15 @@
                     <option value="Marketing">Marketing</option>
                 </select>
             </div>
-            <?php if ($id !== 0) {
-                echo "<button onclick='handleUpdateStudent()' type='submit' class='btn btn-primary' name='btn-submit'>Cập nhật</button>"; ?>
-            <?php } else {
-                echo "<button onclick='handleCreateStudent()' type='submit' class='btn btn-primary' name='btn-submit'>Tạo</button>";
-            } ?>
+            <button type='submit' class='btn btn-primary' name='btn-submit'>
+                <?php
+                if ($id !== 0) {
+                    echo "Cập nhật";
+                } else {
+                    echo "Thêm mới";
+                }
+                ?>
+            </button>
         </form>
     </section>
 
@@ -130,13 +141,36 @@
         const nu = document.getElementById('nu')
         const lop = document.getElementById('lop')
         const khoa = document.getElementById('khoa')
+        const form = document.getElementById('form-post')
 
-        const handleUpdateStudent = () => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault()
+            const data = {
+                id: +id !== 0 ? +id : 0,
+                tenSV: tenSV.value,
+                ngaySinh: ngaySinh.value,
+                diaChi: diaChi.value,
+                gioiTinh: nam.checked ? nam.value : nu.value,
+                lop: lop.value,
+                khoa: khoa.value
+            }
+            $.ajax({
+                url: `./response/luu_sinh_vien.php?action=${+id !== 0 ? 'update' : 'insert'}`,
+                data: data,
+                method: 'POST',
+                success: function(res) {
+                    console.log(res);
+                    if (res.status) {
+                        window.location.href = "index.php"
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
 
-        }
-        const handleCreateStudent = () => {
+            })
+        })
 
-        }
         const handleGetDetailStudent = () => {
             if (+id !== 0) {
                 $.ajax({

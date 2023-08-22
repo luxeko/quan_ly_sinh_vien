@@ -16,14 +16,24 @@
 
 <body>
     <section class="main_container pt-5">
-        <div class="container-sm">
+        <div class="container-sm px-5">
             <h1 class="mb-4 text-center">Quản lý sinh viên</h1>
-            <a href="form.php" class="btn btn-success mb-4 d-inline-flex align-items-center">
-                <span class="fs-5 me-2">
-                    <i class="bi bi-plus"></i>
-                </span>
-                Thêm mới sinh viên
-            </a>
+            <div class="d-flex align-items-center justify-content-between">
+                <a href="form.php" class="btn btn-success mb-4 d-inline-flex align-items-center">
+                    <span class="fs-5 me-2">
+                        <i class="bi bi-plus"></i>
+                    </span>
+                    Thêm mới sinh viên
+                </a>
+                <div>
+                    <div class="input-group">
+                        <span class="input-group-text" id="basic-addon1">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" placeholder="Tên sinh viên..." class="form-control" name="search" id="search" />
+                    </div>
+                </div>
+            </div>
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
@@ -51,19 +61,39 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js" integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa" crossorigin="anonymous"></script>
-
-
+    <?php
+    session_start();
+    if (isset($_SESSION["message"]) && isset($_SESSION["title"]) && isset($_SESSION["status"])) {
+        echo "<script>";
+        echo "toast({";
+        echo "title: " . "'" . $_SESSION["title"] . "',";
+        echo "message: " . "'" . $_SESSION["message"] . "',";
+        echo "type:" . "'" . $_SESSION["status"] . "',";
+        echo "duration: 3000";
+        echo "})";
+        echo "</script>";
+    }
+    // remove all session variables
+    session_unset();
+    // destroy the session
+    session_destroy();
+    ?>
     <script>
         const modal = document.getElementById('modal-delete')
         const overlay = document.getElementById('overlay')
         const tbodyData = document.getElementById('tbody-data');
+        const search = document.getElementById("search")
         const modalLayout = document.createElement("div")
-
         overlay.addEventListener('click', function() {
             this.style.display = 'none'
             modal.removeChild(modalLayout);
         })
-
+        search.addEventListener("change", function(e) {
+            console.log(e.target.value);
+        })
+        const main = () => {
+            handleGetListStudent()
+        }
         const handleGetListStudent = () => {
             $.ajax({
                 url: './response/ds_sinh_vien.php?action=list',
@@ -73,7 +103,6 @@
                 }
             })
         }
-
         const handleShowModal = (id, tenSinhVien) => {
             overlay.style.display = 'block'
             modalLayout.classList.add("modal-dialog", "modal-confirm")
@@ -88,7 +117,7 @@
                     <h4 class="modal-title">Bạn có chắc không?</h4>	
                 </div>
                 <div class="modal-body">
-                    <p>Bạn có thực sự muốn xóa sinh viên ${tenSinhVien}? Nếu xóa thì không thể hoàn tác lại dữ liệu.</p>
+                    <p>Bạn có thực sự muốn xóa sinh viên ${tenSinhVien}? Nếu chọn xoá thì không thể hoàn tác lại dữ liệu.</p>
                 </div>
                 <div class="modal-footer justify-content-center">
                     <button type="button" onclick="handleCancel()" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
@@ -131,7 +160,7 @@
                 }
             })
         }
-        handleGetListStudent()
+        main()
     </script>
 </body>
 
